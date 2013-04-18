@@ -1,0 +1,23 @@
+doctype 5
+html
+    head
+        title Node.js, Twitter Stream, Socket.io
+        link(rel='stylesheet', href='/stylesheets/style.css')
+        script(src="http://code.jquery.com/jquery-1.9.1.min.js")
+        script(src="components/socket.io-client/dist/socket.io.min.js")
+        script(src="/javascripts/script.js")
+    body
+        .container
+            .header
+                h1 Twitter Symbol Heatmap
+                small 
+                    | This application uses Node.js to create a streaming connection between it and Twitter. 
+                    | Any mentions of the following symbols are received by the Node application and broadcasted
+                    | to any clients using Socket.io in 20 second intervals (to prevent overload).
+                small
+                    i
+                        | Last updated:
+                        span(id="last-update") Never
+            ul
+                each val, key in data.symbols
+                    li(data-symbol="#{key}")= key
