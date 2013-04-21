@@ -78,7 +78,7 @@ var t = new twitter({
     access_token_secret: ''     // <--- FILL ME IN
 });
 
-//Tell the twitter API to filter on the watchSymbols 
+// //Tell the twitter API to filter on the watchSymbols 
 t.stream('statuses/filter', { track: watchSymbols }, function(stream) {
 
   //We have a connection. Now watch the 'data' event for incomming tweets.
@@ -106,27 +106,29 @@ t.stream('statuses/filter', { track: watchSymbols }, function(stream) {
           }
       });
 
-      //Increment the total counter if something was mentioned.
+      //If something was mentioned, increment the total counter and send the update to all the clients
       if (claimed) {
+          //Increment total
           watchList.total++;
+
+          //Send to all the clients
+          sockets.sockets.emit('data', watchList);
       }
     }
   });
 });
 
-//Set how often we want to send data to our clients. We could set it for everytime we recieve a tweet
-//but we may end up overloading our clients. Instead, since this is not time critical information, we'll
-//send an update every 20 seconds of our current watchList which includes the total tweets & tweet counters
-//for every symbol
-setInterval(function() {
-    sockets.sockets.emit('data', watchList);
-}, 1000 * 20);
-
 //Reset everything on a new day!
 //We don't want to keep data around from the previous day so reset everything.
 new cronJob('0 0 0 * * *', function(){
+    //Reset the total
     watchList.total = 0;
+
+    //Clear out everything in the map
     _.each(watchSymbols, function(v) { watchList.symbols[v] = 0; });
+
+    //Send the update to the clients
+    sockets.sockets.emit('data', watchList);
 }, null, true);
 
 //Create the server
