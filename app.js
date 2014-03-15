@@ -15,8 +15,17 @@ var app = express();
 //Create the HTTP server with the express app as an argument
 var server = http.createServer(app);
 
+// IMPORTANT!!
+//You will need to get your own key. Don't worry, it's free. But I cannot provide you one
+//since it will instantiate a connection on my behalf and will drop all other streaming connections.
+//Check out: https://dev.twitter.com/ You should be able to create an application and grab the following
+//crednetials from the API Keys section of that application.
+var api_key = '';               // <---- Fill me in
+var api_secret = '';            // <---- Fill me in
+var access_token = '';          // <---- Fill me in
+var access_token_secret = '';   // <---- Fill me in
 
-// Twitter symbols array
+// Twitter symbols array.
 var watchSymbols = ['$msft', '$intc', '$hpq', '$goog', '$nok', '$nvda', '$bac', '$orcl', '$csco', '$aapl', '$ntap', '$emc', '$t', '$ibm', '$vz', '$xom', '$cvx', '$ge', '$ko', '$jnj'];
 
 //This structure will keep the total number of tweets received and a map of all the symbols and how many tweets received of that symbol
@@ -67,15 +76,12 @@ sockets.sockets.on('connection', function(socket) {
     socket.emit('data', watchList);
 });
 
-//Instantiate the twitter component
-//You will need to get your own key. Don't worry, it's free. But I cannot provide you one
-//since it will instantiate a connection on my behalf and will drop all other streaming connections.
-//Check out: https://dev.twitter.com/
+// Instantiate the twitter connection
 var t = new twitter({
-    consumer_key: '',           // <--- FILL ME IN
-    consumer_secret: '',        // <--- FILL ME IN
-    access_token_key: '',       // <--- FILL ME IN
-    access_token_secret: ''     // <--- FILL ME IN
+    consumer_key: api_key,
+    consumer_secret: api_secret,
+    access_token_key: access_token,
+    access_token_secret: access_token_secret
 });
 
 // //Tell the twitter API to filter on the watchSymbols 
